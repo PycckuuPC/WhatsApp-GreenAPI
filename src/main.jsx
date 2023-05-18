@@ -4,11 +4,16 @@ import App from './App.jsx';
 
 import { AuthContextProvider } from './context/AuthContext';
 import { ChatContextProvider } from './context/ChatContext';
+import { Provider } from 'react-redux';
+
+import { store } from './redux/store.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <AuthContextProvider>
     <ChatContextProvider>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ChatContextProvider>
   </AuthContextProvider>
 );

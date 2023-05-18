@@ -1,10 +1,38 @@
+import Home from './pages/Home';
+import Login from './pages/Login';
+import './style.scss';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
+import { useSelector } from 'react-redux';
+
 function App() {
+  const user = useSelector(store => store.user);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!user) {
+      return <Navigate to="/login" />;
+    }
+
+    return children;
+  };
+
   return (
-    <>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route
+            index
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="login" element={<Login />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
