@@ -4,25 +4,25 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const Messages = () => {
   const selectedChat = useSelector(state => state.chat.selectedChat);
-  const messages = useSelector(state => state.chat.chats).filter(
+  const [messages] = useSelector(state => state.chat.chats).filter(
     el => el.tel === selectedChat
   );
 
   useEffect(() => {
-    // const unSub = onSnapshot(doc(db, 'chats', data.chatId), doc => {
-    //   doc.exists() && setMessages(doc.data().messages);
-    // });
-    // return () => {
-    //   unSub();
-    // };
+    const reciever = setInterval(() => {
+      console.log('interval');
+    }, 3000);
+    return () => {
+      clearInterval(reciever);
+    };
   }, []);
 
-  console.log(messages);
+  console.log(messages?.msgs);
 
   return (
     <div className="messages">
       {messages?.msgs?.map(m => (
-        <Message message={m} key={m.id} />
+        <Message message={m} key={m?.id} />
       ))}
     </div>
   );

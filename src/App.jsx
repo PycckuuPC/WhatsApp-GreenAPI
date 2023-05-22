@@ -2,8 +2,6 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import './style.scss';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from './context/AuthContext';
 import { useSelector } from 'react-redux';
 
 function App() {

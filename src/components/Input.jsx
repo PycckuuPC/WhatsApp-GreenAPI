@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMessage } from '../redux/slices/chatSlice';
+import { addMessage, sendMessageThunk } from '../redux/slices/chatSlice';
 
 const Input = () => {
   const [text, setText] = useState('');
-  const tel = useSelector(state => state.chat.selectedChat);
-  const dispatch = useDispatch;
+  const chat = useSelector(state => state.chat.selectedChat);
+  const dispatch = useDispatch();
 
   const handleSend = () => {
-    dispatch(addMessage({ tel, msgs: text }));
+    dispatch(addMessage({ chat, tel: 'my', msg: text }));
+    dispatch(sendMessageThunk(chat.slice(1), text));
     setText('');
   };
   return (
@@ -20,7 +21,7 @@ const Input = () => {
         value={text}
       />
       <div className="send">
-        {tel && text && <button onClick={handleSend}>Send</button>}
+        {chat && text && <button onClick={handleSend}>Отправить</button>}
       </div>
     </div>
   );

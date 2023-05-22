@@ -3,14 +3,13 @@ import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
 import { useDispatch } from 'react-redux';
 import { addChat, selectChat } from '../redux/slices/chatSlice';
+
 const Search = () => {
   const [tel, setTel] = useState('+7');
   const [user, setUser] = useState(null);
   const [err, setErr] = useState(false);
 
   const dispatch = useDispatch();
-
-  const Chat = useContext(ChatContext);
 
   const handleSearch = async () => {
     // const q = query(

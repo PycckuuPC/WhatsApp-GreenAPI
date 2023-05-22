@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { sendMsg, receiveMsg } from '../../utils/greenAPI';
 
 const initialState = {
   chats: [],
@@ -17,7 +18,7 @@ export const chatSlice = createSlice({
     addMessage: (state, action) => ({
       ...state,
       chats: state.chats.map(chat =>
-        chat.tel === action.payload.tel
+        chat.tel === action.payload.chat
           ? { ...chat, msgs: [...chat.msgs, action.payload] }
           : chat
       ),
@@ -26,5 +27,14 @@ export const chatSlice = createSlice({
 });
 
 export const { addChat, selectChat, addMessage } = chatSlice.actions;
+
+export const sendMessageThunk = (tel, message) => dispatch => {
+  sendMsg(tel, message);
+};
+
+export const receiveMsgsThunk = () => dispatch => {
+  const msgs = receiveMsg();
+  dispatch(addMessage(msgs));
+};
 
 export default chatSlice.reducer;
