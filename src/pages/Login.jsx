@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../redux/slices/authSlice';
 
@@ -16,10 +15,9 @@ const Login = () => {
     const token = e.target[1].value;
 
     try {
-      // User.setCurrentUser({ id, token });
       dispatch(setUser({ id, token }));
       localStorage.setItem('user', JSON.stringify({ id, token }));
-      navigate('/');
+      window.location.reload();
     } catch (err) {
       setErr(true);
     }

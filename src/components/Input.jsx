@@ -12,11 +12,17 @@ const Input = () => {
     dispatch(sendMessageThunk(chat.slice(1), text));
     setText('');
   };
+
+  const handleKey = e => {
+    e.code === 'Enter' && handleSend();
+  };
+
   return (
     <div className="input">
       <input
         type="text"
         placeholder="Введите сообщение..."
+        onKeyDown={handleKey}
         onChange={e => setText(e.target.value)}
         value={text}
       />

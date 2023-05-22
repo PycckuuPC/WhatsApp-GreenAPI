@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Message from './Message';
 import { useDispatch, useSelector } from 'react-redux';
+import { receiveMsgsThunk } from '../redux/slices/chatSlice';
 
 const Messages = () => {
   const selectedChat = useSelector(state => state.chat.selectedChat);
   const [messages] = useSelector(state => state.chat.chats).filter(
     el => el.tel === selectedChat
   );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const reciever = setInterval(() => {
-      console.log('interval');
-    }, 3000);
+    const receiver = setInterval(() => {
+      dispatch(receiveMsgsThunk());
+    }, 5000);
     return () => {
-      clearInterval(reciever);
+      clearInterval(receiver);
     };
   }, []);
 
-  console.log(messages?.msgs);
-
   return (
     <div className="messages">
-      {messages?.msgs?.map(m => (
-        <Message message={m} key={m?.id} />
+      {messages?.msgs?.map((m, i) => (
+        <Message message={m} key={i + m.msg} />
       ))}
     </div>
   );

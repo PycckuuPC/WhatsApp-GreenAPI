@@ -1,6 +1,6 @@
 import axios from 'axios';
-const idInstance = JSON.parse(localStorage.getItem('user')).id;
-const apiTokenInstance = JSON.parse(localStorage.getItem('user')).token;
+const idInstance = JSON.parse(localStorage.getItem('user'))?.id;
+const apiTokenInstance = JSON.parse(localStorage.getItem('user'))?.token;
 
 export async function sendMsg(tel, msg) {
   try {
@@ -13,7 +13,17 @@ export async function sendMsg(tel, msg) {
       `https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
       body
     );
-    console.log(tel, response);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function deleteNotification(receiptId) {
+  try {
+    const response = await axios.delete(
+      `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${receiptId}`
+    );
     return response;
   } catch (error) {
     console.error(error);
@@ -21,30 +31,33 @@ export async function sendMsg(tel, msg) {
 }
 
 export async function receiveMsg() {
-  // try {
-  //   // Receive WhatsApp notifications. Method waits for 20 sec and returns empty string if there were no sent messages
-  //   console.log('Waiting incoming notifications...');
-  //   let response;
-  //   while ((response = await restAPI.webhookService.receiveNotification())) {
-  //     let webhookBody = response.body;
-  //     if (webhookBody.typeWebhook === 'incomingMessageReceived') {
-  //       console.log('incomingMessageReceived');
-  //       console.log(webhookBody.messageData.textMessageData.textMessage);
-  //       // Confirm WhatsApp message. Each received message must be confirmed to be able to consume next message
-  //       await restAPI.webhookService.deleteNotification(response.receiptId);
-  //     } else if (webhookBody.typeWebhook === 'stateInstanceChanged') {
-  //       console.log('stateInstanceChanged');
-  //       console.log(`stateInstance=${webhookBody.stateInstance}`);
-  //     } else if (webhookBody.typeWebhook === 'outgoingMessageStatus') {
-  //       console.log('outgoingMessageStatus');
-  //       console.log(`status=${webhookBody.status}`);
-  //     } else if (webhookBody.typeWebhook === 'deviceInfo') {
-  //       console.log('deviceInfo');
-  //       console.log(`status=${webhookBody.deviceData}`);
-  //     }
-  //   }
-  // } catch (ex) {
-  //   console.error(ex);
-  // }
-  // console.log('End');
+  try {
+    const { data } = await axios.get(
+      `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
+    );
+    if (data) {
+      let webhookBody = data.body;
+      if (
+        webhookBody.typeWebhook === 'incomingMessageReceived' &&
+        webhookBody.messageData.typeMessage === 'textMessage'
+      ) {
+        await deleteNotification(data.receiptId);
+        return webhookBody;
+      } else if (webhookBody.typeWebhook === 'stateInstanceChanged') {
+        console.log('stateInstanceChanged');
+        console.log(`stateInstance=${webhookBody.stateInstance}`);
+      } else if (webhookBody.typeWebhook === 'outgoingMessageStatus') {
+        console.log('outgoingMessageStatus');
+        console.log(`status=${webhookBody.status}`);
+      } else if (webhookBody.typeWebhook === 'deviceInfo') {
+        console.log('deviceInfo');
+        console.log(`status=${webhookBody.deviceData}`);
+      }
+      await deleteNotification(data.receiptId);
+    }
+    return null;
+  } catch (ex) {
+    console.error(ex);
+  }
+  console.log('End');
 }
