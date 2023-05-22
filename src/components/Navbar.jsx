@@ -3,7 +3,7 @@ import React from 'react';
 const Navbar = () => {
   const logout = () => {
     localStorage.removeItem('user');
-    window.location.href = '/login';
+    window.location.reload(true);
   };
 
   return (

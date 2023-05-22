@@ -17,7 +17,7 @@ const Login = () => {
     try {
       dispatch(setUser({ id, token }));
       localStorage.setItem('user', JSON.stringify({ id, token }));
-      window.location.reload();
+      window.location.reload(true);
     } catch (err) {
       setErr(true);
     }
