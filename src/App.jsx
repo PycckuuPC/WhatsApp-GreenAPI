@@ -1,7 +1,7 @@
 import Home from './pages/Home';
 import Login from './pages/Login';
 import './style.scss';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, HashRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/">
           <Route
@@ -30,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
