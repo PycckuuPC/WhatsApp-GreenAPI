@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Message from './Message';
 import { useDispatch, useSelector } from 'react-redux';
 import { receiveMsgsThunk } from '../redux/slices/chatSlice';
@@ -10,12 +10,24 @@ const Messages = () => {
   );
   const dispatch = useDispatch();
 
+  const [shouldRepeat, setShouldRepeat] = useState(true);
+
+  const receiveMessages = async () => {
+    await dispatch(receiveMsgsThunk());
+
+    // Повторный вызов после получения данных
+    if (shouldRepeat) {
+      console.log('repeat receive');
+      receiveMessages();
+    }
+  };
+
   useEffect(() => {
-    const receiver = setInterval(() => {
-      dispatch(receiveMsgsThunk());
-    }, 5000);
+    receiveMessages();
+
     return () => {
-      clearInterval(receiver);
+      // Отмена повторного вызова при размонтировании компонента
+      setShouldRepeat(false);
     };
   }, []);
 

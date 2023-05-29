@@ -37,17 +37,21 @@ export const sendMessageThunk = (tel, message) => dispatch => {
   sendMsg(tel, message);
 };
 
-export const receiveMsgsThunk = () => (dispatch, getState) => {
+export const receiveMsgsThunk = () => async (dispatch, getState) => {
   const msgs = receiveMsg();
   const chats = getState().chat.chats.map(el => el.tel);
-  msgs.then(data => {
+
+  try {
+    const data = await msgs;
     if (data) {
       const chat = `+${data.senderData.sender.slice(0, 11)}`;
       const msg = data.messageData.textMessageData.textMessage;
       if (!chats.includes(chat)) dispatch(addChat({ tel: chat, msgs: [] }));
       dispatch(addMessage({ chat, tel: chat, msg }));
     }
-  });
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export default chatSlice.reducer;
